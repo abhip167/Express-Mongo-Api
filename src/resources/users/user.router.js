@@ -14,4 +14,7 @@ userRouter
 // userRouter.get("/:id", (req, res) => res.send(`User Id is: ${req.params.id}`));
 // userRouter.post("/", userController.createUser);
 
-userRouter.route("/:id").put(userController.updateUser);
+userRouter
+  .route("/:id")
+  .put(userController.updateUser)
+  .delete(userController.deleteUser);
