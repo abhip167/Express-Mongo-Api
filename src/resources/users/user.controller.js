@@ -21,7 +21,7 @@ const userController = {
       res.status(200).send(result);
     } catch (error) {
       res.status(400).send({
-        message: err,
+        message: error,
       });
     }
   },
