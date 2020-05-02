@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import pick from "lodash.pick";
 import bcrypt from "bcryptjs";
+import Joi from "@hapi/joi";
 
 // Create a Schema ( data modelling)
 const schema = {
@@ -56,3 +57,32 @@ userSchema.methods.toJSON = function () {
 };
 
 export const User = mongoose.model("user", userSchema);
+
+export function validateUser(data) {
+  const schema = Joi.object({
+    username: Joi.string().alphanum().min(3).max(30).required(),
+
+    password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")),
+
+    email: Joi.string().email({
+      minDomainSegments: 2,
+      tlds: { allow: ["com", "net"] },
+    }),
+  });
+
+  return schema.validate(data);
+  // -> { value: { username: 'abc', birth_year: 1994 } }
+  // const schema = Joi.object({
+  //   email: Joi.string()
+  //     .required()
+  //     .label("Please Enter Email")
+  //     .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
+  //     .label(" Not a Valid Email"),
+  //   password: Joi.string()
+  //     .required()
+  //     .label("Please Enter a password min. of 3 characters"),
+  //   username: Joi.alphanum().min(3).max(30).required(),
+  // });
+
+  // return schema.validate(data);
+}
