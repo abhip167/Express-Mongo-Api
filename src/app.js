@@ -9,8 +9,7 @@ import { router } from "./router";
 import { notFound, logErrors } from "./middlewares";
 
 const app = express();
-
-app.use(express.static(path.join(__dirname, "assets")));
+databaseConnect();
 
 app.use(bodyParser.json());
 app.use(
@@ -18,9 +17,9 @@ app.use(
         extended: true,
     })
 );
-
-databaseConnect();
-
+app.use(express.static(path.join(__dirname, "assets")));
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "pug");
 app.use("/", router);
 
 app.use(notFound);

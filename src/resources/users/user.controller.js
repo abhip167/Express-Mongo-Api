@@ -10,14 +10,17 @@ const userController = {
             return res.status(404).send("Invalid Password or Email");
         }
         // Decode Hash Password
-        const password = bcrypt.compare(req.body.password, user.password);
+        // console.log(user.password);
+        const password = await bcrypt.compare(req.body.password, user.password);
         if (!password) {
             return res.status(400).send("Invalid Password or Email");
         }
         // Create a New Access Token
         const token = user.generateAuthToken();
         // Return User & Token
-        res.header("x-access-token", token).status(200).send(user);
+        res.header("x-access-token", token)
+            .status(200)
+            .render("index", { user: user });
     },
 
     async createUser(req, res) {
