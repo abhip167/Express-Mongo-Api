@@ -1,5 +1,6 @@
 import express from "express";
 import { userRouter } from "./resources/users/user.router";
+import { shotRouter } from "./resources/shots/shots.router";
 import userController from "./resources/users/user.controller";
 import { sanitizeBody } from "express-validator";
 
@@ -14,6 +15,7 @@ router.post(
   userController.createUser
 );
 
+router.use("/shots", shotRouter);
 router.use("/users", userRouter);
 
 // GET POST PUT PATCH DELETE
