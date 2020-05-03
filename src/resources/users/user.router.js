@@ -1,7 +1,7 @@
 import express from "express";
 import userController from "./user.controller";
 import { body } from "express-validator";
-import { catchErrors } from "../../middlewares";
+import { catchErrors, admin, authorization } from "../../middlewares";
 
 export const userRouter = express.Router();
 
@@ -25,5 +25,5 @@ userRouter
         ],
         catchErrors(userController.updateUser)
     )
-    .delete(catchErrors(userController.deleteUser))
+    .delete([authorization, admin], catchErrors(userController.deleteUser))
     .get(catchErrors(userController.getProfile));

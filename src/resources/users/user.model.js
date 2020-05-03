@@ -55,6 +55,7 @@ userSchema.methods.toJSON = function () {
         "photoUrl",
         "bio",
         "url",
+        "isAdmin",
     ]);
 };
 

@@ -3,7 +3,7 @@ import { userRouter } from "./resources/users/user.router";
 import { shotRouter } from "./resources/shots/shots.router";
 import userController from "./resources/users/user.controller";
 import { body } from "express-validator";
-import { catchErrors } from "./middlewares";
+import { catchErrors, authorization, admin } from "./middlewares";
 
 export const router = express.Router();
 
@@ -16,6 +16,8 @@ router.post(
     [body("email").trim().escape()],
     catchErrors(userController.createUser)
 );
+
+router.get("/me", authorization, userController.getDashboard);
 
 router.use("/shots", shotRouter);
 router.use("/users", userRouter);

@@ -1,7 +1,7 @@
 import express from "express";
 import shotController from "./shots.controller";
 import { body } from "express-validator";
-import { catchErrors } from "../../middlewares";
+import { catchErrors, authorization, admin } from "../../middlewares";
 
 export const shotRouter = express.Router();
 
@@ -9,23 +9,25 @@ shotRouter
     .route("/")
     .post(
         [
+            authorization,
             body("title").trim().escape(),
             body("description").trim().escape(),
             body("author").trim().escape(),
         ],
         catchErrors(shotController.createShot)
     ) //CREATE()
-    .get(catchErrors(shotController.getShots)); // GET ALL SHOTS
+    .get(authorization, catchErrors(shotController.getShots)); // GET ALL SHOTS
 
 shotRouter
     .route("/:id")
-    .get(catchErrors(shotController.readShot)) // READ
+    .get(authorization, catchErrors(shotController.readShot)) // READ
     .put(
         [
+            authorization,
             body("title").trim().escape(),
             body("description").trim().escape(),
             body("author").trim().escape(),
         ],
         catchErrors(shotController.updateShot)
     ) // UPDATE
-    .delete(catchErrors(shotController.deleteShot)); // DELETE
+    .delete([authorization, admin], catchErrors(shotController.deleteShot)); // DELETE

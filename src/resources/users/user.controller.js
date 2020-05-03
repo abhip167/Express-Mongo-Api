@@ -26,7 +26,9 @@ const userController = {
             return res.status(400).send(error.details[0]);
         }
 
-        let user = new User(pick(req.body, ["email", "password", "username"]));
+        let user = new User(
+            pick(req.body, ["email", "password", "username", "isAdmin"])
+        );
         // let user = new User(req.body); ====> This will also Work Fine
         await user.save();
 
@@ -62,7 +64,8 @@ const userController = {
     },
 
     async getDashboard(req, res) {
-        res.status(200).send("You Must Sign In First");
+        const user = await User.findById(req.user._id);
+        res.status(200).send(user);
     },
 };
 
