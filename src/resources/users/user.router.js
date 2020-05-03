@@ -1,6 +1,6 @@
 import express from "express";
 import userController from "./user.controller";
-import { sanitizeBody } from "express-validator";
+import { body } from "express-validator";
 
 export const userRouter = express.Router();
 
@@ -17,10 +17,10 @@ userRouter
   .route("/:id")
   .put(
     [
-      sanitizeBody("email").trim().escape(),
-      sanitizeBody("username").trim().escape(),
-      sanitizeBody("bio").trim().escape(),
-      sanitizeBody("url").trim().escape(),
+      body("email").trim().escape(),
+      body("username").trim().escape(),
+      body("bio").trim().escape(),
+      body("url").trim().escape(),
     ],
     userController.updateUser
   )

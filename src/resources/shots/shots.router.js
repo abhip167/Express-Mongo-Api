@@ -1,6 +1,6 @@
 import express from "express";
 import shotController from "./shots.controller";
-import { sanitizeBody } from "express-validator";
+import { body } from "express-validator";
 
 export const shotRouter = express.Router();
 
@@ -8,9 +8,9 @@ shotRouter
   .route("/")
   .post(
     [
-      sanitizeBody("title").trim().escape(),
-      sanitizeBody("description").trim().escape(),
-      sanitizeBody("author").trim().escape(),
+      body("title").trim().escape(),
+      body("description").trim().escape(),
+      body("author").trim().escape(),
     ],
     shotController.createShot
   ) //CREATE
@@ -21,9 +21,9 @@ shotRouter
   .get(shotController.readShot) // READ
   .put(
     [
-      sanitizeBody("title").trim().escape(),
-      sanitizeBody("description").trim().escape(),
-      sanitizeBody("author").trim().escape(),
+      body("title").trim().escape(),
+      body("description").trim().escape(),
+      body("author").trim().escape(),
     ],
     shotController.updateShot
   ) // UPDATE

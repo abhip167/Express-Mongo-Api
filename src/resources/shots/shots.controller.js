@@ -42,6 +42,7 @@ const shotController = {
     try {
       const shot = await Shot.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
+        useFindAndModify: false,
       });
 
       res.status(200).send(shot);
