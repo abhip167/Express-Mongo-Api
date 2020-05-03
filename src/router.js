@@ -3,16 +3,18 @@ import { userRouter } from "./resources/users/user.router";
 import { shotRouter } from "./resources/shots/shots.router";
 import userController from "./resources/users/user.controller";
 import { body } from "express-validator";
+import { catchErrors } from "./middlewares";
 
 export const router = express.Router();
 
 router.get("/", (req, res) => res.send("Home Page"));
 router.get("/about", (req, res) => res.send("About Us Page"));
 router.get("/signin", (req, res) => res.send("Sign In Page"));
+router.post("/signin", userController.signIn);
 router.post(
-  "/signup",
-  [body("email").trim().escape()],
-  userController.createUser
+    "/signup",
+    [body("email").trim().escape()],
+    catchErrors(userController.createUser)
 );
 
 router.use("/shots", shotRouter);

@@ -1,75 +1,69 @@
 import { User, validateUser } from "./user.model";
 import pick from "lodash.pick";
+import bcrypt from "bcryptjs";
 
 const userController = {
-  async createUser(req, res) {
-    try {
-      const { error } = validateUser(req.body);
-      if (error) {
-        return res.status(400).send(error.details[0]);
-      }
+    async signIn(req, res) {
+        // Find the User by Email
+        const user = await User.findOne({ email: req.body.email });
+        if (!user) {
+            return res.status(404).send("Invalid Password or Email");
+        }
+        // Decode Hash Password
+        const password = bcrypt.compare(req.body.password, user.password);
+        if (!password) {
+            return res.status(400).send("Invalid Password or Email");
+        }
+        // Create a New Access Token
+        const token = user.generateAuthToken();
+        // Return User & Token
+        res.header("x-access-token", token).status(200).send(user);
+    },
 
-      let user = new User(pick(req.body, ["email", "password", "username"]));
-      // let user = new User(req.body); ====> This will also Work Fine
-      await user.save();
-      res.send(user);
-    } catch (error) {
-      res.status(400).send({
-        message: error,
-      });
-    }
-  },
+    async createUser(req, res) {
+        const { error } = validateUser(req.body);
+        if (error) {
+            return res.status(400).send(error.details[0]);
+        }
 
-  async getUsers(req, res) {
-    try {
-      let result = await User.find().sort();
-      res.status(200).send(result);
-    } catch (error) {
-      res.status(400).send({
-        message: error,
-      });
-    }
-  },
+        let user = new User(pick(req.body, ["email", "password", "username"]));
+        // let user = new User(req.body); ====> This will also Work Fine
+        await user.save();
 
-  async updateUser(req, res) {
-    try {
-      const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
-      res.status(200).send(user);
-    } catch (error) {
-      res.status(400).send(error);
-    }
-  },
+        const token = user.generateAuthToken();
 
-  async deleteUser(req, res) {
-    try {
-      const user = await User.deleteOne({ _id: req.params.id });
-      res.status(200).send(user);
-    } catch (error) {
-      res.status(400).send(error);
-    }
-  },
+        res.header("x-access-token", token).status(200).send(user);
+    },
 
-  async getProfile(req, res) {
-    try {
-      const user = await User.findById(req.params.id);
-      if (!user) {
-        return res.status(404).send("User Not Found");
-      }
-      res.status(200).send(user);
-    } catch (error) {
-      res.status(400).send(error);
-    }
-  },
+    async getUsers(req, res) {
+        let result = await User.find().sort();
+        // throw new Error("Hey Something got Wrong ( I'm in middleware )");
+        res.status(200).send(result);
+    },
 
-  async getDashboard(req, res) {
-    try {
-      res.status(200).send("You Must Sign In First");
-    } catch (error) {
-      res.status(400).send(error);
-    }
-  },
+    async updateUser(req, res) {
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+        });
+        res.status(200).send(user);
+    },
+
+    async deleteUser(req, res) {
+        const user = await User.deleteOne({ _id: req.params.id });
+        res.status(200).send(user);
+    },
+
+    async getProfile(req, res) {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).send("User Not Found");
+        }
+        res.status(200).send(user);
+    },
+
+    async getDashboard(req, res) {
+        res.status(200).send("You Must Sign In First");
+    },
 };
 
 export default userController;

@@ -1,11 +1,12 @@
 import express from "express";
 import userController from "./user.controller";
 import { body } from "express-validator";
+import { catchErrors } from "../../middlewares";
 
 export const userRouter = express.Router();
 
 //   REFACTORED CODE
-userRouter.route("/").get(userController.getUsers);
+userRouter.route("/").get(catchErrors(userController.getUsers));
 // .post(userController.createUser);
 
 //   SIMPLE CODE
@@ -14,15 +15,15 @@ userRouter.route("/").get(userController.getUsers);
 // userRouter.post("/", userController.createUser);
 
 userRouter
-  .route("/:id")
-  .put(
-    [
-      body("email").trim().escape(),
-      body("username").trim().escape(),
-      body("bio").trim().escape(),
-      body("url").trim().escape(),
-    ],
-    userController.updateUser
-  )
-  .delete(userController.deleteUser)
-  .get(userController.getProfile);
+    .route("/:id")
+    .put(
+        [
+            body("email").trim().escape(),
+            body("username").trim().escape(),
+            body("bio").trim().escape(),
+            body("url").trim().escape(),
+        ],
+        catchErrors(userController.updateUser)
+    )
+    .delete(catchErrors(userController.deleteUser))
+    .get(catchErrors(userController.getProfile));
