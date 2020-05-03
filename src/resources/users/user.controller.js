@@ -30,7 +30,7 @@ const userController = {
             pick(req.body, ["email", "password", "username", "isAdmin"])
         );
         // let user = new User(req.body); ====> This will also Work Fine
-        await user.save();
+        await User.create(user);
 
         const token = user.generateAuthToken();
 
